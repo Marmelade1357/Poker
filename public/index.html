@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Poker – Online</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%83%8F%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- ============ START ============ -->
+<section id="screen-home" class="screen">
+  <div class="card home-card">
+    <h1>🃏 Poker</h1>
+    <p class="subtitle">Texas Hold'em online mit Freunden – letzte:r mit Chips gewinnt.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="create">Tisch erstellen</button>
+      <button class="tab-btn" data-tab="join">Tisch beitreten</button>
+    </div>
+
+    <div id="tab-create" class="tab-panel">
+      <label>Dein Name</label>
+      <input id="create-name" maxlength="20" placeholder="z. B. Oualid" />
+      <button id="btn-create" class="btn primary">Neuen Tisch erstellen</button>
+    </div>
+
+    <div id="tab-join" class="tab-panel hidden">
+      <label>Dein Name</label>
+      <input id="join-name" maxlength="20" placeholder="z. B. Alex" />
+      <label>Raum-Code</label>
+      <input id="join-code" maxlength="4" placeholder="z. B. AB12" style="text-transform:uppercase" />
+      <button id="btn-join" class="btn primary">Beitreten</button>
+    </div>
+
+    <p class="hint">2–8 Spieler · Ein Gerät pro Person (Handy, Tablet oder PC)</p>
+  </div>
+
+  <a id="btn-back-hub-home" class="btn ghost small hidden back-hub-home" href="/">← Spielauswahl</a>
+</section>
+
+<!-- ============ LOBBY ============ -->
+<section id="screen-lobby" class="screen hidden">
+  <div class="card">
+    <div class="lobby-header">
+      <div>
+        <div class="eyebrow">Raum-Code – an Freunde weitergeben</div>
+        <div id="lobby-code" class="room-code">----</div>
+      </div>
+      <button id="btn-leave-lobby" class="btn ghost small">Verlassen</button>
+    </div>
+
+    <h3>Spieler (<span id="lobby-count">0</span>/8)</h3>
+    <ul id="lobby-players" class="player-list"></ul>
+
+    <div id="lobby-bot-controls" class="bot-controls hidden">
+      <button id="btn-fill-bots" class="btn secondary small hidden">🤖 Mit Bots auf 2 auffüllen</button>
+      <button id="btn-add-bot" class="btn ghost small">+ Bot hinzufügen</button>
+    </div>
+    <p class="hint">Weniger Freunde da? Füge Bots hinzu – sie spielen automatisch mit.</p>
+
+    <div id="lobby-settings" class="lobby-settings hidden">
+      <label for="input-stack">Startstack (Chips)</label>
+      <input type="number" id="input-stack" min="50" max="1000000" step="50" value="1000">
+
+      <label>Blinds</label>
+      <div class="blind-mode-choice">
+        <label class="radio-label"><input type="radio" name="blind-mode" value="fixed" checked> Fest</label>
+        <label class="radio-label"><input type="radio" name="blind-mode" value="levels"> Steigend</label>
+      </div>
+
+      <label for="input-smallblind">Small Blind</label>
+      <input type="number" id="input-smallblind" min="1" max="100000" step="5" value="10">
+
+      <div id="lobby-level-minutes-wrap" class="hidden">
+        <label for="input-levelminutes">Level-Dauer (Minuten)</label>
+        <input type="number" id="input-levelminutes" min="1" max="120" value="10">
+      </div>
+    </div>
+    <p id="lobby-settings-display" class="hint hidden"></p>
+
+    <p id="lobby-status" class="hint"></p>
+    <button id="btn-start" class="btn primary hidden">Spiel starten</button>
+  </div>
+</section>
+
+<!-- ============ SPIEL ============ -->
+<section id="screen-game" class="screen hidden">
+  <header class="game-header">
+    <div class="game-header-top">
+      <div class="game-header-left">
+        <span class="room-code small" id="game-code"></span>
+        <button id="btn-show-log" class="btn ghost small">📜 Hand-Verlauf</button>
+        <button id="btn-toggle-sound" class="btn ghost small">🔊</button>
+      </div>
+      <div class="game-header-right">
+        <span id="blind-badge" class="round-badge"></span>
+        <button id="btn-leave-game" class="btn ghost small">Verlassen</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-body">
+    <div id="table-wrap" class="table-wrap">
+      <div id="table-felt" class="table-felt">
+        <div id="pot-display" class="pot-display"></div>
+        <div id="board-cards" class="board-cards"></div>
+        <div id="table-note" class="waiting-note"></div>
+      </div>
+      <div id="seats" class="seats"></div>
+    </div>
+  </div>
+
+  <div id="action-bar" class="action-bar hidden">
+    <div id="hand-cards" class="hand-cards"></div>
+    <div id="action-buttons" class="action-buttons"></div>
+  </div>
+</section>
+
+<!-- ============ VERLAUF MODAL ============ -->
+<div id="log-modal" class="modal hidden">
+  <div class="modal-content log-modal-content">
+    <button id="btn-close-log-modal" class="btn ghost small modal-close">✕</button>
+    <h2>📜 Hand-Verlauf</h2>
+    <ul id="log-list" class="log-list"></ul>
+  </div>
+</div>
+
+<script src="socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>
