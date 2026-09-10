@@ -75,11 +75,17 @@
     toastTimer = setTimeout(() => hide(t), 3200);
   }
 
-  function saveSession() { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); }
-  function clearSession() { localStorage.removeItem(SESSION_KEY); session = null; }
+  // sessionStorage statt localStorage: die Session gehört zu GENAU diesem Tab.
+  // localStorage wäre browserweit geteilt - bei mehreren Tabs (z.B. um lokal
+  // mehrere Spieler zu testen) würde ein Tab beim automatischen Socket.IO-
+  // Reconnect (z.B. nach Drosselung im Hintergrund) die Session eines ANDEREN
+  // Tabs laden und dessen Identität/Karten übernehmen, ohne dass irgendwer
+  // etwas tut.
+  function saveSession() { sessionStorage.setItem(SESSION_KEY, JSON.stringify(session)); }
+  function clearSession() { sessionStorage.removeItem(SESSION_KEY); session = null; }
   function loadSession() {
     try {
-      const raw = localStorage.getItem(SESSION_KEY);
+      const raw = sessionStorage.getItem(SESSION_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch (e) { return null; }
   }

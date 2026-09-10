@@ -796,7 +796,13 @@ function scheduleBotTurnIfNeeded(room) {
     if (room.phase !== 'hand') return;
     if (room.currentTurnIndex !== turnIdxAtSchedule || room.street !== streetAtSchedule) return;
     let action;
-    if (isDisconnectedHuman) {
+    if (!turnPlayer.isBot) {
+      // Verbindungsstatus JETZT (beim Feuern des Timers) prüfen, nicht den
+      // beim Planen erfassten Stand: sonst würde ein kurzer Verbindungs-
+      // abbruch (z.B. Reverse-Proxy-Hiccup), der sich längst erledigt hat,
+      // den Zug trotzdem automatisch für die Person wegklicken, während sie
+      // gerade selbst klickt.
+      if (turnPlayer.connected) return;
       // ponytail: kein Zug-Timer für Menschen, aber ein getrennter Spieler
       // darf das Spiel nicht dauerhaft blockieren - checkt oder foldet.
       const legal = legalActionsFor(room, turnPlayer.id);
